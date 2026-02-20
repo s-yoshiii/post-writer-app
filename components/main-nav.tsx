@@ -5,7 +5,7 @@ import Link from "next/link";
 import MobileNav from "./mobile-nav";
 import { useState } from "react";
 interface Props {
-  items?: NavItem[];
+  items: NavItem[];
   children?: React.ReactNode;
 }
 export default function MainNav({ items }: Props) {
@@ -35,7 +35,7 @@ export default function MainNav({ items }: Props) {
       >
         <span>メニュー</span>
       </button>
-      {showMobileMenu && <MobileNav />}
+      {showMobileMenu && <MobileNav items={items} />}
     </div>
   );
 }
