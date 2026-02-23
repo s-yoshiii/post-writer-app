@@ -1,0 +1,189 @@
+---
+title: "@tailwindcss/typography でブログ記事を美しくスタイリングする"
+description: Tailwind CSS の typography プラグインを使って、Markdown や MDX で書いたブログ記事をシンプルに美しく整える方法を紹介します。
+date: "2026-02-23"
+published: true
+authors:
+  - s.yoshii
+---
+
+Tailwind でブログ記事やドキュメントをスタイリングするのは、これまで骨の折れる作業でした。タイポグラフィへの深い理解と、大量のカスタム CSS が必要でした。
+
+Tailwind はデフォルトで段落・見出し・リストなどのブラウザスタイルをすべてリセットします。アプリケーション UI を作るうえでは非常に便利ですが、CMS や Markdown ファイルから来たコンテンツをそのままスタイリングしたいときには直感に反することがあります。
+
+よくある疑問として、こんな声が上がります。
+
+> なぜ Tailwind は `h1` のデフォルトスタイルを消してしまうの？どうやって無効化すればいい？
+
+ただベーススタイルをオフにするだけでは、ダッシュボード UI の `p` タグで余分なマージンを毎回消す羽目になります。ブログ記事にはブラウザデフォルトではなく、きちんとデザインされたスタイルが必要です。
+
+`@tailwindcss/typography` プラグインはそんなジレンマを解決します。ベーススタイルを壊さずに、コンテンツを美しく整えてくれます。
+
+`prose` クラスをコンテンツのラッパーに当てるだけで、HTML をきれいなドキュメントに変換できます。
+
+```html
+<article class="prose">
+  <h1>Garlic bread with cheese: What the science tells us</h1>
+  <p>
+    For years parents have espoused the health benefits of eating garlic bread
+    with cheese to their children, with the food earning such an iconic status
+    in our culture that kids will often dress up as warm, cheesy loaf for
+    Halloween.
+  </p>
+  <p>
+    But a recent study shows that the celebrated appetizer may be linked to a
+    series of rabies cases springing up around the country.
+  </p>
+</article>
+```
+
+詳しい使い方やオプションは [公式ドキュメント](https://github.com/tailwindlabs/tailwindcss-typography) を参照してください。
+
+---
+
+## この記事でカバーするタイポグラフィ要素
+
+以降はプラグインが各要素をどのようにレンダリングするかを確認するためのサンプルです。**太字テキスト**、順序なしリスト、順序付きリスト、コードブロック、ブロック引用、_イタリック_ など、実用的な要素を網羅しています。
+
+各要素をカバーする理由はシンプルです。
+
+1.  すべての要素がデフォルトで美しく見えること。
+2.  追加設定ゼロで使い始められること。
+3.  リストは 3 項目あると自然に見えるので、3 項目にしています。
+
+### Typography should be easy
+
+Typography は、コンテンツを読みやすくするための基礎です。
+
+> Typography is pretty important if you don't want your stuff to look like trash. Make it good then it won't be bad.
+
+ここで箇条書きリストの例を示します。
+
+- リストの最初の項目です。
+- この例では項目を短く保っています。
+- 後でより複雑な項目も見ていきます。
+
+これでこのセクションは終わりです。
+
+## 見出しを連続して使う場合
+
+### こうなります。
+
+見出しが連続する場合、2 番目の見出しの上マージンを調整することで読みやすくなります。
+
+### 段落の後に見出しが来る場合は …
+
+段落と見出しの間には適切なスペースが必要です。次は、より複雑なリストの例です。
+
+- **リスト項目に見出しをつけるパターン**
+
+  少し凝ったスタイルに見えますが、スペースの調整がやや複雑になります。
+
+  複数の段落を持つリスト項目の場合、段落同士・見出し・リスト間のスペースが自然に見えるよう工夫が必要です。
+
+- **2 項目目がなければリストになりません。**
+
+  前の項目と同様の構成です。リストらしさを出すためにもう一項目追加しています。
+
+- **3 項目目も加えておきましょう。**
+
+  2 項目でも問題はありませんが、3 項目の方が自然なリストに見えます。
+
+リストの後には締めくくりの一文を入れることが多いです。
+
+## コードブロックも適切に表示されます
+
+シンタックスハイライトには [highlight.js](https://highlightjs.org/) や [Prism](https://prismjs.com/) を使うことが多いですが、プラグインのデフォルトでも十分に読みやすく表示されます。
+
+`tailwind.config.js` の例です。
+
+```js
+module.exports = {
+  purge: [],
+  theme: {
+    extend: {},
+  },
+  variants: {},
+  plugins: [],
+};
+```
+
+### ネストリストについて
+
+ネストされたリストは概して読みにくいため、Medium のようなエディタでは使用できません。ただし、必要な場面のためにスタイルを用意しています。
+
+1.  **ネストリストは避けるのが無難です。**
+    - 整理されているように見えても、画面上では読みにくい形状になりがちです。
+    - UI のナビゲーションもフラットに保つ方が良いです。
+    - ソースコードのフォルダ構成も深くしすぎないようにしましょう。
+2.  **もう一項目追加します。**
+    - 2 段階以上のネストはほぼ不要です。
+    - 2 段階でも多いくらいです。
+3.  **3 項目あるとリストらしくなります。**
+    - ネストリストはできる限り避けましょう。
+    - 読者のためにシンプルに保つことが大切です。
+
+Markdown の `<li>` は、複数の段落を持つ場合のみ子要素に `<p>` タグが付きます。このケースも適切にスタイリングされています。
+
+- **ネストリストの例（2 段落あり）**
+
+  2 段落目です。
+
+  - `<p>` タグなしのリスト項目
+  - こちらも 1 行のみ
+
+- **こちらは `<p>` タグがつきます。**
+
+  2 段落目を追加したことでこの項目には `<p>` タグがつきます。
+
+  - 2 行目を追加したため `<p>` タグがつきます。
+
+    こちらが 2 行目です。
+
+  - もう一項目追加しておきます。
+
+- ネストなしの締めくくり項目です。
+
+このセクションの締めくくりです。
+
+## その他のスタイリング要素
+
+リンクも適切に表示されます（例: [Tailwind CSS 公式サイト](https://tailwindcss.com)）。
+
+テーブルのスタイルも確認しましょう。
+
+| Wrestler                | Origin       | Finisher           |
+| ----------------------- | ------------ | ------------------ |
+| Bret "The Hitman" Hart  | Calgary, AB  | Sharpshooter       |
+| Stone Cold Steve Austin | Austin, TX   | Stone Cold Stunner |
+| Randy Savage            | Sarasota, FL | Elbow Drop         |
+| Vader                   | Boulder, CO  | Vader Bomb         |
+| Razor Ramon             | Chuluota, FL | Razor's Edge       |
+
+インラインコードも整えられています（例: `<span>` 要素や `@tailwindcss/typography`）。
+
+### 見出しに `code` を使うパターン
+
+多用は避けるべきですが、バッククォートで囲む方法はうまく機能します。
+
+リンク内にコードを入れることもできます（例: [`tailwindcss/docs`](https://github.com/tailwindlabs/tailwindcss)）。バッククォートの下にアンダーラインが引かれる点は避けがたい挙動です。
+
+#### `h4` 要素の使用例
+
+`h5` や `h6` はほとんどのケースで不要です。Medium が 2 段階しか見出しをサポートしない理由がよくわかります。
+
+### 見出しの連続配置
+
+#### `h4` でも問題なく表示されます。
+
+見出しのスタイリングが適切に機能していることを確認できました。
+
+締めくくりの段落を設けることで、文書が自然に終わります。読みやすいドキュメントには、余韻のある終わり方が必要です。
+
+## GitHub Flavored Markdown
+
+`remark-gfm` を使うことで、GitHub Flavored Markdown の追加機能が利用できます。
+
+オートリンクの例です。www.example.com や https://example.com のような URL は自動的に `a` タグに変換されます。
+
+メールアドレスも同様です: contact@example.com
