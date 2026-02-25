@@ -1,9 +1,10 @@
 import { allPosts } from "contentlayer/generated";
+import { format } from "date-fns";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function BlogPage() {
   const posts = allPosts;
-  console.log(allPosts);
   return (
     <div className="container py-6 lg:py-10">
       <div>
@@ -17,26 +18,31 @@ export default function BlogPage() {
         </div>
       </div>
       <hr className="my-8" />
-      {posts.map((post) => (
-        <article key={post._id}>
-          {post.image && (
-            <Image
-              src={post.image}
-              alt={post.title}
-              width={804}
-              height={452}
-              className="rounded-md border bg-muted"
-            />
-          )}
-          <h2 className="text-2xl font-extrabold">{post.title}</h2>
-          {post.description && (
-            <p className="text-muted-foreground">{post.description}</p>
-          )}
-          {post.date && (
-            <p className="text-sm text-muted-foreground">{post.date}</p>
-          )}
-        </article>
-      ))}
+      <div className="grid sm:grid-cols-2 gap-10">
+        {posts.map((post) => (
+          <article key={post._id} className="relative flex flex-col">
+            {post.image && (
+              <Image
+                src={post.image}
+                alt={post.title}
+                width={804}
+                height={452}
+                className="rounded-md border bg-muted"
+              />
+            )}
+            <h2 className="text-2xl font-extrabold">{post.title}</h2>
+            {post.description && (
+              <p className="text-muted-foreground">{post.description}</p>
+            )}
+            {post.date && (
+              <p className="text-sm text-muted-foreground">
+                {format(post.date, "yyyy/MM/dd")}
+              </p>
+            )}
+            <Link href={post.slug} className="absolute inset-0"></Link>
+          </article>
+        ))}
+      </div>
     </div>
   );
 }
