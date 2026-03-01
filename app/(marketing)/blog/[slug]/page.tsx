@@ -6,10 +6,42 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Mdx from "@/components/mdx-component";
+import { siteConfig } from "@/config/site";
 
 async function getPostFromSlug(slug: string) {
   const post = allPosts.find((post) => post.slugAsParams === slug);
   return post;
+}
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const page = await getPostFromSlug(slug);
+  if (!page) {
+    return {};
+  }
+  return {
+    title: page.title,
+    description: page.description,
+    openGraph: {
+      type: "article",
+      locale: "ja",
+      url: `${siteConfig.url}${page.url}`,
+      title: page.title,
+      description: page.description,
+      siteName: siteConfig.name,
+      images: page.image ? [page.image] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: page.title,
+      description: page.description,
+      images: page.image ? [page.image] : undefined,
+      creator: "s.yoshiii",
+    },
+  };
 }
 
 export default async function PostPage({
