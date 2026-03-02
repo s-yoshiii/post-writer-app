@@ -1,4 +1,5 @@
 import Link from "next/link";
+import UserAuthForm from "@/components/user-auth-form";
 export default function Login() {
   return (
     <div className="container flex flex-col justify-center items-center h-screen">
@@ -16,7 +17,7 @@ export default function Login() {
             アカウントを持っていない方はこちら
           </Link>
         </p>
-        {/* <UserAuthForm /> */}
+        <UserAuthForm />
       </div>
     </div>
   );
