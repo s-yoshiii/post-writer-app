@@ -7,7 +7,8 @@ import { Icon } from "./icon";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 export default function UserAuthForm() {
-  const [isGithubLoading, setGithubLoading] = useState(false);
+  const [isGithubLoading, setIsGithubLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   return (
     <div className="grid gap-6">
       <form>
@@ -33,20 +34,36 @@ export default function UserAuthForm() {
           </span>
         </div>
       </div>
-      <button
-        className={cn(buttonVariants({ variant: "outline" }))}
-        onClick={() => {
-          setGithubLoading(true);
-          signIn("github");
-        }}
-      >
-        {isGithubLoading ? (
-          <Icon.spinner className="animate-spin mr-1" />
-        ) : (
-          <Icon.github className="mr-1" />
-        )}
-        githubでログイン
-      </button>
+      <div className="flex flex-col gap-3">
+        <button
+          className={cn(buttonVariants({ variant: "outline" }))}
+          onClick={() => {
+            setIsGithubLoading(true);
+            signIn("github");
+          }}
+        >
+          {isGithubLoading ? (
+            <Icon.spinner className="animate-spin mr-1" />
+          ) : (
+            <Icon.github className="mr-1" />
+          )}
+          githubでログイン
+        </button>
+        <button
+          className={cn(buttonVariants({ variant: "outline" }))}
+          onClick={() => {
+            setIsGoogleLoading(true);
+            signIn("google");
+          }}
+        >
+          {isGoogleLoading ? (
+            <Icon.spinner className="animate-spin mr-1" />
+          ) : (
+            <Icon.google className="mr-1" />
+          )}
+          Googleでログイン
+        </button>
+      </div>
     </div>
   );
 }
