@@ -14,6 +14,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Auto-generated files
+    ".contentlayer/**",
+    "lib/generated/**",
   ]),
 ]);
 
