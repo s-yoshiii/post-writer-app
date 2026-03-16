@@ -1,3 +1,4 @@
+import DashboardNav from "@/components/dashboard-nav";
 import MainNav from "@/components/main-nav";
 
 import SiteFooter from "@/components/site-footer";
@@ -15,7 +16,9 @@ export default function DashboardLayout({
         </div>
       </header>
       <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
-        <aside className="hidden md:flex w-[200px] flex-col">SideBar</aside>
+        <aside className="hidden md:flex w-[200px] flex-col">
+          <DashboardNav items={dashboardConfig.sideBarNav} />
+        </aside>
         <main className="flex flex-col w-full flex-1 overflow-hidden">
           {children}
         </main>
