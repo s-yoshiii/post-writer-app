@@ -23,9 +23,9 @@ export const dashboardConfig: DashboardConfig = {
       icon: "billing",
     },
     {
-      title: "記事投稿",
-      href: "/href",
-      icon: "post",
+      title: "設定",
+      href: "/dashboard/settings",
+      icon: "settings",
     },
   ],
 };
