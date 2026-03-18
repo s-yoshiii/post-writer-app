@@ -1,7 +1,9 @@
+import DashBoardShell from "@/components/dashboard-shell";
+
 export default function SettingsPage() {
   return (
-    <div>
+    <DashBoardShell>
       <div>SettingsPage</div>
-    </div>
+    </DashBoardShell>
   );
 }
