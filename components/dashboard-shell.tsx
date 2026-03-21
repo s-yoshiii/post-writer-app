@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-interface DashboardPageProps extends React.HTMLAttributes<HTMLDivElement> {}
+type DashboardPageProps = React.HTMLAttributes<HTMLDivElement>;
 
 export default function DashBoardShell({
   children,
