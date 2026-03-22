@@ -1,7 +1,9 @@
+import { ReactNode } from "react";
+
 interface DashboardHeaderProps {
   heading: string;
   text?: string;
-  children?: string;
+  children?: ReactNode;
 }
 export default function DashboardHeader({
   heading,
