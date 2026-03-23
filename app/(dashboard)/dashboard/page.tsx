@@ -2,6 +2,7 @@ import DashboardHeader from "@/components/dashboard-header";
 import DashBoardShell from "@/components/dashboard-shell";
 import PostCreateButton from "@/components/post-create-button";
 import PostItem from "@/components/post-item";
+import PostOperations from "@/components/post-operations";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
