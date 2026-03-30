@@ -1,3 +1,4 @@
+"use client";
 import { Post } from "@/lib/generated/prisma";
 import {
   DropdownMenu,
@@ -25,7 +26,9 @@ export default function PostOperations({ post }: PostOperationsProps) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Icon.ellipsis className="h-4 w-4" />
+          <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Icon.ellipsis className="h-4 w-4" />
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-40" align="start">
           <DropdownMenuItem>

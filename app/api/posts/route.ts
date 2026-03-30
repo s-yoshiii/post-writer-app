@@ -6,7 +6,7 @@ import * as z from "zod";
 const postCreateSchema = z.object({
   title: z.string(),
   content: z.string().optional(),
-})
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,23 +17,23 @@ export async function POST(req: NextRequest) {
     const { user } = session;
     const json = await req.json();
     const body = postCreateSchema.parse(json);
-    const { title, content} = body;
+    const { title, content } = body;
     const post = await db.post.create({
-        data: {
-            title,
-            content,
-            authorId: user.id,
-        },
-        select: {
-          id:true,
-        }
+      data: {
+        title,
+        content,
+        authorId: user.id,
+      },
+      select: {
+        id: true,
+      },
     });
-    return NextResponse.json(post)
+    return NextResponse.json(post);
   } catch (err) {
-    if(err instanceof z.ZodError) {
+    if (err instanceof z.ZodError) {
       return NextResponse.json(err.issues, {
-        status:422
-      })
+        status: 422,
+      });
     }
     return NextResponse.json(null, { status: 500 });
   }

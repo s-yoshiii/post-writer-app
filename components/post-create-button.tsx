@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Icon } from "./icon";
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface PostCreateButtonProps
   extends React.ComponentProps<"button">, VariantProps<typeof buttonVariants> {
@@ -31,6 +32,9 @@ export default function PostCreateButton({
     });
     setIsLoading(false);
     if (!response.ok) {
+      return toast.error("問題が発生しました。", {
+        description: "投稿が作成されませんでした。もう一度お試しください。",
+      });
     }
     const post = await response.json();
     router.refresh();
