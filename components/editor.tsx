@@ -1,6 +1,8 @@
+"use client";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
+import TextareaAutosize from "react-textarea-autosize";
 
 export default function Editor() {
   return (
@@ -21,17 +23,20 @@ export default function Editor() {
           </button>
         </div>
         <div>
-          <textarea
+          <TextareaAutosize
             name=""
             id="title"
             autoFocus
             placeholder="Post Title"
             className="w-full resize-none outline-none overflow-hidden bg-transparent text-5xl focus:outline-none"
-          ></textarea>
+          ></TextareaAutosize>
+        </div>
+        <div id="editor" className="min-h-[500px] ">
+          Editor
         </div>
         <p className="text-sm text-gray-500">
           Use
-          <kbd className="rounded-md border bg-muted px-1 text uppercase">
+          <kbd className="rounded-md border bg-muted px-1 text-xs uppercase">
             Tab
           </kbd>
           to open the command menu.
