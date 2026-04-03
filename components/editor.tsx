@@ -1,10 +1,29 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import TextareaAutosize from "react-textarea-autosize";
-
 export default function Editor() {
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+  const initializeEditor = async () => {
+    const EditorJS = (await import("@editorjs/editorjs")).default;
+    new EditorJS({
+      holder: "editor",
+      placeholder: "ここに記事を書く",
+      inlineToolbar: true,
+    });
+  };
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsMounted(true);
+    }
+  }, []);
+  useEffect(() => {
+    if (isMounted) {
+      initializeEditor();
+    }
+  }, [isMounted]);
   return (
     <form>
       <div>
