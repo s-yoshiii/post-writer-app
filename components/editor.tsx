@@ -8,10 +8,20 @@ export default function Editor() {
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const initializeEditor = async () => {
     const EditorJS = (await import("@editorjs/editorjs")).default;
+    const Header = (await import("@editorjs/header")).default;
+    const LinkTool = (await import("@editorjs/link")).default;
+    const EditorjsList = (await import("@editorjs/list")).default;
+    const CodeTool = (await import("@editorjs/code")).default;
     new EditorJS({
       holder: "editor",
       placeholder: "ここに記事を書く",
       inlineToolbar: true,
+      tools: {
+        header: Header,
+        LinkTool: LinkTool,
+        List: EditorjsList,
+        code: CodeTool,
+      },
     });
   };
   useEffect(() => {
