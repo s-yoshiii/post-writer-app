@@ -1,19 +1,24 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
+import type { default as EditorJSType } from "@editorjs/editorjs";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import TextareaAutosize from "react-textarea-autosize";
 export default function Editor() {
   const [isMounted, setIsMounted] = useState<boolean>(false);
-  const initializeEditor = async () => {
+  const ref = useRef<EditorJSType | null>(null);
+  const initializeEditor = useCallback(async () => {
     const EditorJS = (await import("@editorjs/editorjs")).default;
     const Header = (await import("@editorjs/header")).default;
     const LinkTool = (await import("@editorjs/link")).default;
     const EditorjsList = (await import("@editorjs/list")).default;
     const CodeTool = (await import("@editorjs/code")).default;
-    new EditorJS({
+    const editor = new EditorJS({
       holder: "editor",
+      onReady() {
+        ref.current = editor;
+      },
       placeholder: "ここに記事を書く",
       inlineToolbar: true,
       tools: {
@@ -23,7 +28,7 @@ export default function Editor() {
         code: CodeTool,
       },
     });
-  };
+  }, []);
   useEffect(() => {
     if (typeof window !== "undefined") {
       setIsMounted(true);
@@ -33,7 +38,11 @@ export default function Editor() {
     if (isMounted) {
       initializeEditor();
     }
-  }, [isMounted]);
+    return () => {
+      ref.current?.destroy();
+      ref.current = null;
+    };
+  }, [isMounted, initializeEditor]);
   return (
     <form>
       <div>
@@ -51,7 +60,7 @@ export default function Editor() {
             <span>保存</span>
           </button>
         </div>
-        <div>
+        <div className="w-[800px] mx-auto">
           <TextareaAutosize
             name=""
             id="title"
