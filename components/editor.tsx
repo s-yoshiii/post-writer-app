@@ -6,6 +6,9 @@ import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import TextareaAutosize from "react-textarea-autosize";
 import { Post } from "@/lib/generated/prisma";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { postPatchSchema, postPatchSchemaType } from "@/lib/varidations/post";
 interface EditorProps {
   post: Pick<Post, "id" | "title" | "published" | "content">;
 }
@@ -47,6 +50,13 @@ export default function Editor({ post }: EditorProps) {
       ref.current = null;
     };
   }, [isMounted, initializeEditor]);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<postPatchSchemaType>({
+    resolver: zodResolver(postPatchSchema),
+  });
   return (
     <form>
       <div>
