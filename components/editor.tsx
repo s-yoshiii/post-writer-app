@@ -5,7 +5,11 @@ import type { default as EditorJSType } from "@editorjs/editorjs";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import TextareaAutosize from "react-textarea-autosize";
-export default function Editor() {
+import { Post } from "@/lib/generated/prisma";
+interface EditorProps {
+  post: Pick<Post, "id" | "title" | "published" | "content">;
+}
+export default function Editor({ post }: EditorProps) {
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const ref = useRef<EditorJSType | null>(null);
   const initializeEditor = useCallback(async () => {
@@ -65,6 +69,7 @@ export default function Editor() {
             name=""
             id="title"
             autoFocus
+            defaultValue={post.title}
             placeholder="Post Title"
             className="w-full resize-none outline-none overflow-hidden bg-transparent text-5xl focus:outline-none"
           ></TextareaAutosize>
