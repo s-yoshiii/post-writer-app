@@ -8,7 +8,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { Post } from "@/lib/generated/prisma";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { postPatchSchema, postPatchSchemaType } from "@/lib/varidations/post";
+import { postPatchSchema, postPatchSchemaType } from "@/lib/validations/post";
 interface EditorProps {
   post: Pick<Post, "id" | "title" | "published" | "content">;
 }
@@ -57,8 +57,13 @@ export default function Editor({ post }: EditorProps) {
   } = useForm<postPatchSchemaType>({
     resolver: zodResolver(postPatchSchema),
   });
+  const onSubmit = async (data: postPatchSchemaType) => {
+    const blocks = await ref.current?.save();
+    console.log(data);
+    console.log(blocks);
+  };
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div>
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center space-x-10">
@@ -76,12 +81,12 @@ export default function Editor({ post }: EditorProps) {
         </div>
         <div className="w-[800px] mx-auto">
           <TextareaAutosize
-            name=""
             id="title"
             autoFocus
             defaultValue={post.title}
             placeholder="Post Title"
             className="w-full resize-none outline-none overflow-hidden bg-transparent text-5xl focus:outline-none"
+            {...register("title")}
           ></TextareaAutosize>
         </div>
         <div id="editor" className="min-h-[500px] ">
