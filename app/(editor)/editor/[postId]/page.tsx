@@ -2,7 +2,7 @@ import Editor from "@/components/editor";
 import { db } from "@/lib/db";
 import { Post, User } from "@/lib/generated/prisma";
 import { getCurrentUser } from "@/lib/session";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 async function getPostForUser(postId: Post["id"], userId: User["id"]) {
   const post = await db.post.findFirst({
@@ -29,7 +29,7 @@ export default async function EditorPage({ params }: EditorPageProps) {
   const post = await getPostForUser(postId, userId);
 
   if (!post) {
-    redirect("/dashboard");
+    notFound();
   }
 
   return (
