@@ -1,5 +1,7 @@
+import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { postPatchSchema } from "@/lib/validations/post";
+import { getServerSession } from "next-auth/next";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 const routeContextSchema = z.object({
@@ -12,17 +14,43 @@ export async function PATCH(
   req: NextRequest,
   context: { params: Promise<{ postId: string }> }
 ) {
-  const { params } = routeContextSchema.parse({ params: await context.params });
-  const json = await req.json();
-  const body = postPatchSchema.parse(json);
-  await db.post.update({
+  try {
+    const { params } = routeContextSchema.parse({
+      params: await context.params,
+    });
+    if (!(await verifyCurrentUserHasAccessToPost(params.postId))) {
+      return NextResponse.json(null, {
+        status: 403,
+      });
+    }
+    const json = await req.json();
+    const body = postPatchSchema.parse(json);
+    await db.post.update({
+      where: {
+        id: params.postId,
+      },
+      data: {
+        title: body.title,
+        content: body.content,
+      },
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(error.issues, { status: 422 });
+    } else {
+      return NextResponse.json(null, { status: 500 });
+    }
+  }
+  return NextResponse.json(null, { status: 200 });
+}
+
+async function verifyCurrentUserHasAccessToPost(postId: string) {
+  const session = await getServerSession(authOptions);
+  const count = await db.post.count({
     where: {
-      id: params.postId,
-    },
-    data: {
-      title: body.title,
-      content: body.content,
+      id: postId,
+      authorId: session?.user.id,
     },
   });
-  return NextResponse.json(null, { status: 200 });
+  return count > 0;
 }
