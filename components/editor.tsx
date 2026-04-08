@@ -9,12 +9,15 @@ import { Post } from "@/lib/generated/prisma";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { postPatchSchema, postPatchSchemaType } from "@/lib/validations/post";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 interface EditorProps {
   post: Pick<Post, "id" | "title" | "published" | "content">;
 }
 export default function Editor({ post }: EditorProps) {
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const ref = useRef<EditorJSType | null>(null);
+  const router = useRouter();
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import("@editorjs/editorjs")).default;
     const Header = (await import("@editorjs/header")).default;
@@ -59,8 +62,23 @@ export default function Editor({ post }: EditorProps) {
   });
   const onSubmit = async (data: postPatchSchemaType) => {
     const blocks = await ref.current?.save();
-    console.log(data);
-    console.log(blocks);
+    const response = await fetch(`/api/posts/${post.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: data.title,
+        content: blocks,
+      }),
+    });
+    if (!response.ok) {
+      return toast.error("問題が発生しました。", {
+        description: "あなたの記事は保存されませんでした。もう一度お試しください。",
+      });
+    }
+    router.refresh();
+    return toast.success("正常に保存されました。");
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
