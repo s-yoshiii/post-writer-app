@@ -11,11 +11,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { postPatchSchema, postPatchSchemaType } from "@/lib/validations/post";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Icon } from "./icon";
 interface EditorProps {
   post: Pick<Post, "id" | "title" | "published" | "content">;
 }
 export default function Editor({ post }: EditorProps) {
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const ref = useRef<EditorJSType | null>(null);
   const router = useRouter();
   const initializeEditor = useCallback(async () => {
@@ -24,6 +26,7 @@ export default function Editor({ post }: EditorProps) {
     const LinkTool = (await import("@editorjs/link")).default;
     const EditorjsList = (await import("@editorjs/list")).default;
     const CodeTool = (await import("@editorjs/code")).default;
+    const body = postPatchSchema.parse(post);
     const editor = new EditorJS({
       holder: "editor",
       onReady() {
@@ -31,6 +34,7 @@ export default function Editor({ post }: EditorProps) {
       },
       placeholder: "ここに記事を書く",
       inlineToolbar: true,
+      data: body.content,
       tools: {
         header: Header,
         LinkTool: LinkTool,
@@ -38,7 +42,7 @@ export default function Editor({ post }: EditorProps) {
         code: CodeTool,
       },
     });
-  }, []);
+  }, [post]);
   useEffect(() => {
     if (typeof window !== "undefined") {
       setIsMounted(true);
@@ -61,6 +65,7 @@ export default function Editor({ post }: EditorProps) {
     resolver: zodResolver(postPatchSchema),
   });
   const onSubmit = async (data: postPatchSchemaType) => {
+    setIsSaving(true);
     const blocks = await ref.current?.save();
     const response = await fetch(`/api/posts/${post.id}`, {
       method: "PATCH",
@@ -72,9 +77,11 @@ export default function Editor({ post }: EditorProps) {
         content: blocks,
       }),
     });
+    setIsSaving(false);
     if (!response.ok) {
       return toast.error("問題が発生しました。", {
-        description: "あなたの記事は保存されませんでした。もう一度お試しください。",
+        description:
+          "あなたの記事は保存されませんでした。もう一度お試しください。",
       });
     }
     router.refresh();
@@ -94,6 +101,7 @@ export default function Editor({ post }: EditorProps) {
             <p className="text-sm text-muted-foreground">公開</p>
           </div>
           <button type="submit" className={cn(buttonVariants())}>
+            {isSaving && <Icon.spinner className="w-4 h-4 ml-6 animate-spin" />}
             <span>保存</span>
           </button>
         </div>
