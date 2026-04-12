@@ -10,6 +10,35 @@ const routeContextSchema = z.object({
   }),
 });
 
+export async function DELETE(
+  req: NextRequest,
+  context: { params: Promise<{ postId: string }> }
+) {
+  try {
+    const { params } = routeContextSchema.parse({
+      params: await context.params,
+    });
+    if (!(await verifyCurrentUserHasAccessToPost(params.postId))) {
+      return NextResponse.json(null, {
+        status: 403,
+      });
+    }
+    await db.post.delete({
+      where: {
+        id: params.postId,
+      },
+    });
+    return new Response(null, {
+      status: 204,
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(error.issues, { status: 422 });
+    } else {
+      return NextResponse.json(null, { status: 500 });
+    }
+  }
+}
 export async function PATCH(
   req: NextRequest,
   context: { params: Promise<{ postId: string }> }
