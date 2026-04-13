@@ -44,6 +44,7 @@ async function deletePost(postId: string) {
 }
 export default function PostOperations({ post }: PostOperationsProps) {
   const [showDeleteAlert, setShowDeleteAlert] = useState<boolean>(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);
   const router = useRouter();
   return (
     <>
@@ -82,13 +83,20 @@ export default function PostOperations({ post }: PostOperationsProps) {
               className="bg-red-500 focus:bg-red-400 hover:bg-red-400"
               onClick={async (e) => {
                 e.preventDefault();
+                setIsDeleteLoading(true);
                 const deleted = await deletePost(post.id);
                 if (deleted) {
                   setShowDeleteAlert(false);
+                  setIsDeleteLoading(false);
                   router.refresh();
                 }
               }}
             >
+              {isDeleteLoading ? (
+                <Icon.spinner className="animate-spin mr-2 w-4 h-4" />
+              ) : (
+                <Icon.trash className="w-4 h-4 mr-2" />
+              )}
               削除
             </AlertDialogAction>
           </AlertDialogFooter>
